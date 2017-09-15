@@ -1,0 +1,5 @@
+storage:
+  filesystem:
+    rootDirectory: /tmp/idata
+session:
+  inmemory:

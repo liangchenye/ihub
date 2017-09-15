@@ -1,0 +1,14 @@
+log:
+  adapter: console
+db:
+  driver: mysql
+  user: test
+  password: test
+  name: idb
+  server: localhost:3306
+storageload: static
+storage:
+  filesystem:
+    rootDirectory: /tmp/idata
+session:
+  inmemory:

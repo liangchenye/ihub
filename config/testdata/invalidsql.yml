@@ -1,0 +1,9 @@
+db:
+  driver: mysql
+  user: test
+  password: test
+storage:
+  filesystem:
+    rootDirectory: /tmp/idata
+session:
+  inmemory:
