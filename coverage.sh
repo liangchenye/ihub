@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # most of this code are copied from docker/distribution, so don't re-work on the ut for now.
 ignore=(
-"github.com/isula/isula/storage/driver/filesystem"
+"github.com/isula/ihub/storage/driver/filesystem"
 )
 
 set -e

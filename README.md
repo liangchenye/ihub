@@ -2,3 +2,7 @@
 
 
 isula hub: ways to install/update isula os, provides plugins to support other protocols
+
+
+## How to use
+Please refers to [Case](./case).
