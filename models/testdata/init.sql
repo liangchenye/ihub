@@ -14,3 +14,11 @@ INSERT INTO container_image(id, tag, size, repo_id, proto, proto_version) VALUES
  (5, "v0.3", 1024, 3, "oci", "v1"), 
  (6, "v0.4", 1024, 4, "oci", "v1");
 
+INSERT INTO pkg_repo(id, name, star, description) VALUES
+ (1, "isula", 1, "this is isula repo"),
+ (2, "euleros", 3, "this is euleros repo");
+
+INSERT INTO pkg(id, name, size, repo_id, downloads, type) VALUES
+ (1, "ostree", 100, 1, 100, "rpm"),
+ (2, "runc", 10, 1, 0, "rpm"),
+ (3, "ostree",  101, 2, 0, "rpm");

@@ -53,11 +53,8 @@ func (cfg *Config) Valid() error {
 	if err := cfg.DB.Valid(); err != nil {
 		return err
 	}
-	if err := cfg.Session.Valid(); err != nil {
-		return err
-	}
 
-	return nil
+	return cfg.Session.Valid()
 }
 
 // LogConfig stores the log config item group
