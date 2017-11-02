@@ -1,8 +1,10 @@
 package filesystem
 
 import (
+	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/astaxie/beego/context"
@@ -54,4 +56,26 @@ func TestPutAndGetContent(t *testing.T) {
 
 	data, _ := d.GetContent(ctx, testPath)
 	assert.Equal(t, testData, data)
+}
+
+func TestPutFromReader(t *testing.T) {
+	tmpDir, _ := ioutil.TempDir("", "test")
+	defer os.RemoveAll(tmpDir)
+
+	var ctx context.Context
+	var d driver
+	paras := map[string]interface{}{"rootDirectory": tmpDir}
+	d.Init(paras)
+
+	testData := "test word"
+	testPath := "testdir/testpath"
+	r := strings.NewReader(testData)
+	w, _ := d.Writer(ctx, testPath, false)
+	_, err := io.Copy(w, r)
+	assert.Nil(t, err)
+	w.Close()
+
+	data, err := d.GetContent(ctx, testPath)
+	assert.Nil(t, err)
+	assert.Equal(t, testData, string(data))
 }
