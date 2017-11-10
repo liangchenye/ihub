@@ -30,6 +30,23 @@ type Pkg struct {
 	Type string `orm:"column(type);size(15);null"`
 }
 
+// PkgInfo defines the information which could public for users
+type PkgInfo struct {
+	Name      string
+	Downloads int64
+	Type      string
+}
+
+// PkgInfoNew get a pkginfo from pkg
+func PkgInfoNew(pkg *Pkg) PkgInfo {
+	var pi PkgInfo
+	pi.Name = pkg.Name
+	pi.Downloads = pkg.Downloads
+	pi.Type = pkg.Type
+
+	return pi
+}
+
 var pkgModels = []interface{}{
 	new(PkgRepo),
 	new(Pkg),
