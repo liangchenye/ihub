@@ -42,10 +42,28 @@ func (r *Repo) GetPackageOrDir() {
 		return
 	}
 
+	reponame := filepath.Dir(url)
+	pkgname := filepath.Base(url)
+	// TODO In some cases, we add pkg simple by 'rsync' or 'scp'. It should have a strick rule to disable this operation.
+	//  Or we need to provide a 'sync' api.
+	pkg, err := models.QueryPkgByName(reponame, pkgname)
+	if err != nil {
+		CtxErrorWrap(r.Ctx, http.StatusInternalServerError, err, fmt.Sprintf("Cannot query the file '%s'.", url))
+		return
+	}
+
 	data, err := storage.GetRepoPackage(r.Ctx, url)
 	if err != nil {
 		CtxErrorWrap(r.Ctx, http.StatusInternalServerError, err, fmt.Sprintf("Cannot find the file '%s'.", url))
 		return
+	}
+	size := len(data)
+
+	if pkg == nil {
+		if _, err := models.AddPkg(reponame, pkgname, int64(size), ""); err != nil {
+			CtxErrorWrap(r.Ctx, http.StatusInternalServerError, err, fmt.Sprintf("Cannot add the file '%s'.", url))
+			return
+		}
 	}
 
 	if _, err := models.PkgDownloadInc(filepath.Dir(url), filepath.Base(url)); err != nil {
@@ -53,7 +71,7 @@ func (r *Repo) GetPackageOrDir() {
 	}
 
 	header := make(map[string]string)
-	header["Content-Length"] = fmt.Sprint(len(data))
+	header["Content-Length"] = fmt.Sprint(size)
 	CtxDataWrap(r.Ctx, http.StatusOK, data, header)
 	return
 }
