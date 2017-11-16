@@ -70,6 +70,7 @@ func RunScript(script string) error {
 		}
 		_, err := orm.NewOrm().Raw(sql).Exec()
 		if err != nil {
+			fmt.Printf("Failed to exec `%s`: %v.\n", sql, err)
 			return err
 		}
 	}
