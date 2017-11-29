@@ -1,0 +1,4 @@
+./ok .. ok
+All tests successful.
+Files=1, Tests=1,  0 wallclock secs ( 0.01 usr +  0.00 sys =  0.01 CPU)
+Result: PASS
