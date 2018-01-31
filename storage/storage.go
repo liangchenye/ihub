@@ -69,6 +69,7 @@ func Driver() driver.StorageDriver {
 	var err error
 	sysDriver, err = loadDriver(cfg.Storage)
 	if err != nil {
+		logs.Debug(err)
 		panic("Failed to load driver")
 	}
 

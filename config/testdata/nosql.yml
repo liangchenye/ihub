@@ -1,5 +1,8 @@
 storage:
   filesystem:
     rootDirectory: /tmp/idata
+server:
+  schema: http
+  port: 80
 session:
   inmemory:

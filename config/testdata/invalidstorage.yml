@@ -4,5 +4,8 @@ db:
   password: test
   name: idb
   server: localhost:3306
+server:
+  schema: http
+  port: 80
 session:
   inmemory:

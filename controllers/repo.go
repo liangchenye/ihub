@@ -8,6 +8,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"github.com/isula/ihub/config"
 	"github.com/isula/ihub/models"
 	"github.com/isula/ihub/storage"
 	"github.com/isula/ihub/storage/driver"
@@ -37,8 +38,13 @@ func (r *Repo) GetPackageOrDir() {
 	if info.IsDir() {
 		logs.Debug("'%s' is a directory", url)
 		files, _ := storage.ListRepoDir(r.Ctx, url)
+		fileMap := make(map[string]string)
 		// return the template view
-		r.Data["files"] = files
+		addr := config.GetDisplayAddr()
+		for _, f := range files {
+			fileMap[f] = fmt.Sprintf("%s/repo/%s", addr, f)
+		}
+		r.Data["files"] = fileMap
 		return
 	}
 

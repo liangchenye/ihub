@@ -2,6 +2,9 @@ db:
   driver: mysql
   user: test
   password: test
+server:
+  schema: http
+  port: 80
 storage:
   filesystem:
     rootDirectory: /tmp/idata
