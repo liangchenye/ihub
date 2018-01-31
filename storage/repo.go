@@ -10,40 +10,36 @@ import (
 	"github.com/isula/ihub/storage/driver"
 )
 
-const repoPrefix = "repo"
-
 // HeadRepoURL return the repo url stat
 // TODO we need to get user in ctx, or setting in config
 func HeadRepoURL(ctx *context.Context, url string) (driver.FileInfo, error) {
-	storagePath := fmt.Sprintf("%s/%s", repoPrefix, url)
-	logs.Debug("Head '%s'.", storagePath)
+	logs.Debug("Head '%s'.", url)
 
-	return Driver().Stat(*ctx, storagePath)
+	return Driver().Stat(*ctx, url)
 }
 
 // GetRepoPackage gets the blob data
 // TODO we need to get user in ctx, or setting in config
 func GetRepoPackage(ctx *context.Context, url string) ([]byte, error) {
-	storagePath := fmt.Sprintf("%s/%s", repoPrefix, url)
-	logs.Debug("GetRepoPackage '%s'.", storagePath)
+	logs.Debug("GetRepoPackage '%s'.", url)
 
-	return Driver().GetContent(*ctx, storagePath)
+	return Driver().GetContent(*ctx, url)
 }
 
 // PutPackage put the blob data to a repo by a name
 func PutPackage(ctx *context.Context, reponame string, pkgname string, data []byte) error {
-	storagePath := fmt.Sprintf("%s/%s/%s", repoPrefix, reponame, pkgname)
-	logs.Debug("PutPackage '%s'.", storagePath)
+	url := fmt.Sprintf("%s/%s", reponame, pkgname)
+	logs.Debug("PutPackage '%s'.", url)
 
-	return Driver().PutContent(*ctx, storagePath, data)
+	return Driver().PutContent(*ctx, url, data)
 }
 
 // PutPackageFromReader writes the package data to a repo from a reader stream
 func PutPackageFromReader(ctx *context.Context, reponame string, pkgname string, r io.Reader) (int64, error) {
-	storagePath := fmt.Sprintf("%s/%s/%s", repoPrefix, reponame, pkgname)
-	logs.Debug("PutPackageFromReader '%s'.", storagePath)
+	url := fmt.Sprintf("%s/%s", reponame, pkgname)
+	logs.Debug("PutPackageFromReader '%s'.", url)
 
-	w, err := Driver().Writer(*ctx, storagePath, false)
+	w, err := Driver().Writer(*ctx, url, false)
 	if err != nil {
 		return 0, err
 	}
@@ -54,19 +50,12 @@ func PutPackageFromReader(ctx *context.Context, reponame string, pkgname string,
 
 // ListRepoDir lists the content inside a repo directory
 func ListRepoDir(ctx *context.Context, url string) ([]string, error) {
-	storagePath := fmt.Sprintf("%s/%s", repoPrefix, url)
-	logs.Debug("List '%s'.", storagePath)
+	logs.Debug("List '%s'.", url)
 
-	raw, err := Driver().List(*ctx, storagePath)
+	raw, err := Driver().List(*ctx, url)
 	if err != nil {
 		return nil, err
 	}
 
 	return raw, nil
-	//	var clean []string
-	//	for _, v := range raw {
-	//		logs.Debug("Get raw ", v)
-	//		clean = append(clean, filepath.Base(v)+"/")
-	//	}
-	//	return clean, nil
 }

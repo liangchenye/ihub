@@ -8,7 +8,7 @@ db:
   name: idb
   server: localhost:3306
 server:
-  schema: http
+  schema: invalid
   port: 80
 storageload: static
 storage:

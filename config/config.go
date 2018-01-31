@@ -26,8 +26,8 @@ var (
 
 // Config defines the config items
 type Config struct {
-	// Port is the server listen port
-	Port int64 `yaml:"port"`
+	// Server is the server configuration
+	Server HTTPConfig `yaml:"server"`
 	// Log defines the log config group
 	// The log validation will be checked in the log init part.
 	Log LogConfig `yaml:"log,omitempty"`
@@ -50,7 +50,13 @@ func (cfg *Config) Valid() error {
 	if err := cfg.Storage.Valid(); err != nil {
 		return err
 	}
+	// DB could be empty in some case, like 'repo'
 	if err := cfg.DB.Valid(); err != nil {
+		// FIXME: DB might not be necessary
+		return err
+	}
+
+	if err := cfg.Server.Valid(); err != nil {
 		return err
 	}
 

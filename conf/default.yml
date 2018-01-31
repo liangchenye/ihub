@@ -7,6 +7,12 @@ db:
   password: isula
   name: isula
   server: localhost:3306
+server:
+  schema: https
+  port: 443
+  keyfile: server.key
+  certfile: server.cert
+  website: isula.org
 storageload: static
 storage:
   filesystem:

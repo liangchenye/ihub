@@ -54,6 +54,7 @@ func TestConfigValid(t *testing.T) {
 		{"invalidsql.yml", false},
 		{"invalidstorage.yml", false},
 		{"nosql.yml", false},
+		{"invalidhttp.yml", false},
 		{"invalidsession.yml", false},
 	}
 

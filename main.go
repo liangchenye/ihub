@@ -24,10 +24,20 @@ func main() {
 		logs.Warning(err)
 	}
 
-	conn, _ := cfg.DB.GetConnection()
-	if err := models.InitDB(conn, cfg.DB.Driver, "default"); err != nil {
-		logs.Critical("Error in init db: ", err)
+	if err := config.InitHTTP(cfg.Server); err != nil {
+		logs.Critical("Error in init http: ", err)
 		return
+	}
+
+	conn, err := cfg.DB.GetConnection()
+	if err == nil {
+		if err := models.InitDB(conn, cfg.DB.Driver, "default"); err != nil {
+			logs.Critical("Error in init db: ", err)
+			return
+		}
+	} else {
+		// Don't need to have a database sometimes
+		logs.Warning(err)
 	}
 
 	if err := storage.InitStorage(cfg.Storage); err != nil {
