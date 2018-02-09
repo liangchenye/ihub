@@ -16,6 +16,6 @@ server:
 storageload: static
 storage:
   filesystem:
-    rootDirectory: /tmp/idata
+    rootdirectory: /tmp/idata
 session:
   inmemory:

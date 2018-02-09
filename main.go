@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	_ "github.com/docker/distribution/registry/storage/driver/filesystem"
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/isula/ihub/config"
@@ -12,7 +13,6 @@ import (
 	"github.com/isula/ihub/session"
 	_ "github.com/isula/ihub/session/memory"
 	"github.com/isula/ihub/storage"
-	_ "github.com/isula/ihub/storage/driver/filesystem"
 )
 
 func main() {

@@ -5,8 +5,8 @@ import (
 
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
+	"github.com/docker/distribution/registry/storage/driver"
 
-	"github.com/isula/ihub/storage/driver"
 	"github.com/isula/ihub/utils"
 )
 
@@ -23,7 +23,7 @@ func HeadBlob(ctx *context.Context, repo string, digest string, proto string, pr
 	storagePath := ComposeBlobPath(repo, digest, proto, protoVersion)
 	logs.Debug("Head '%s'.", storagePath)
 
-	return Driver().Stat(*ctx, storagePath)
+	return Driver().Stat(*BC2DC(ctx), storagePath)
 }
 
 // GetBlob gets the blob data
@@ -32,7 +32,7 @@ func GetBlob(ctx *context.Context, repo string, digest string, proto string, pro
 	storagePath := ComposeBlobPath(repo, digest, proto, protoVersion)
 	logs.Debug("Get '%s'.", storagePath)
 
-	return Driver().GetContent(*ctx, storagePath)
+	return Driver().GetContent(*BC2DC(ctx), storagePath)
 }
 
 // PutBlob puts the blob
@@ -42,7 +42,7 @@ func PutBlob(ctx *context.Context, repo string, proto string, protoVersion strin
 	storagePath := ComposeBlobPath(repo, digest, proto, protoVersion)
 	logs.Debug("Put '%s'.", storagePath)
 
-	return Driver().PutContent(*ctx, storagePath, data)
+	return Driver().PutContent(*BC2DC(ctx), storagePath, data)
 }
 
 // DeleteBlob deletes the blob
@@ -51,5 +51,5 @@ func DeleteBlob(ctx *context.Context, repo string, digest string, proto string, 
 	storagePath := ComposeBlobPath(repo, digest, proto, protoVersion)
 	logs.Debug("Delete '%s'.", storagePath)
 
-	return Driver().Delete(*ctx, storagePath)
+	return Driver().Delete(*BC2DC(ctx), storagePath)
 }

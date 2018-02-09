@@ -1,14 +1,37 @@
 package driver
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"regexp"
-	"sync"
+	"strconv"
+	"strings"
 
-	"github.com/astaxie/beego/context"
+	"github.com/docker/distribution/context"
 )
+
+// Version is a string representing the storage driver version, of the form
+// Major.Minor.
+// The registry must accept storage drivers with equal major version and greater
+// minor version, but may not be compatible with older storage driver versions.
+type Version string
+
+// Major returns the major (primary) component of a version.
+func (version Version) Major() uint {
+	majorPart := strings.Split(string(version), ".")[0]
+	major, _ := strconv.ParseUint(majorPart, 10, 0)
+	return uint(major)
+}
+
+// Minor returns the minor (secondary) component of a version.
+func (version Version) Minor() uint {
+	minorPart := strings.Split(string(version), ".")[1]
+	minor, _ := strconv.ParseUint(minorPart, 10, 0)
+	return uint(minor)
+}
+
+// CurrentVersion is the current storage driver Version.
+const CurrentVersion Version = "0.1"
 
 // StorageDriver defines methods that a Storage Driver must implement for a
 // filesystem-like key/value object storage. Storage Drivers are automatically
@@ -17,12 +40,6 @@ import (
 // Please see the aforementioned factory package for example code showing how to get an instance
 // of a StorageDriver
 type StorageDriver interface {
-	// Init updates the parameters
-	Init(parameters map[string]interface{}) error
-
-	// Valid checks if parameters are sufficient parameters
-	Valid(parameters map[string]interface{}) error
-
 	// Name returns the human-readable "name" of the driver, useful in error
 	// messages and logging. By convention, this will just be the registration
 	// name, but drivers may provide other information here.
@@ -61,6 +78,12 @@ type StorageDriver interface {
 
 	// Delete recursively deletes all objects stored at "path" and its subpaths.
 	Delete(ctx context.Context, path string) error
+
+	// URLFor returns a URL which may be used to retrieve the content stored at
+	// the given path, possibly using the given options.
+	// May return an ErrUnsupportedMethod in certain StorageDriver
+	// implementations.
+	URLFor(ctx context.Context, path string, options map[string]interface{}) (string, error)
 }
 
 // FileWriter provides an abstraction for an opened writable file-like object in
@@ -139,38 +162,4 @@ type Error struct {
 
 func (err Error) Error() string {
 	return fmt.Sprintf("%s: %s", err.DriverName, err.Enclosed)
-}
-
-var (
-	sdsLock sync.Mutex
-	sds     = make(map[string]StorageDriver, 8)
-)
-
-// Register regists a storage driver to the system driver map
-func Register(name string, driver StorageDriver) error {
-	if name == "" {
-		return errors.New("Could not register a Storage with an empty name")
-	}
-	if driver == nil {
-		return errors.New("Could not register a nil Storage")
-	}
-
-	sdsLock.Lock()
-	defer sdsLock.Unlock()
-
-	if _, exists := sds[name]; exists {
-		return fmt.Errorf("Storage type '%s' is already registered", name)
-	}
-
-	sds[name] = driver
-	return nil
-}
-
-// FindDriver returns the storage driver by its name and parameters
-func FindDriver(name string, params map[string]interface{}) (StorageDriver, error) {
-	if d, ok := sds[name]; ok {
-		err := d.Valid(params)
-		return d, err
-	}
-	return nil, fmt.Errorf("Cannot find '%s' storage driver", name)
 }

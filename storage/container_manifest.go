@@ -18,7 +18,7 @@ func GetManifest(ctx *context.Context, repo string, tag string, proto string, pr
 	storagePath := ComposeManifestPath(repo, tag, proto, protoVersion)
 	logs.Debug("Get '%s'.", storagePath)
 
-	return Driver().GetContent(*ctx, storagePath)
+	return Driver().GetContent(*BC2DC(ctx), storagePath)
 }
 
 // PutManifest puts the manifest data
@@ -27,7 +27,7 @@ func PutManifest(ctx *context.Context, repo string, tag string, proto string, pr
 	storagePath := ComposeManifestPath(repo, tag, proto, protoVersion)
 	logs.Debug("Put '%s'.", storagePath)
 
-	return Driver().PutContent(*ctx, storagePath, data)
+	return Driver().PutContent(*BC2DC(ctx), storagePath, data)
 }
 
 // DeleteManifest deletes the manifest data
@@ -36,5 +36,5 @@ func DeleteManifest(ctx *context.Context, repo string, tag string, proto string,
 	storagePath := ComposeManifestPath(repo, tag, proto, protoVersion)
 	logs.Debug("Delete '%s'.", storagePath)
 
-	return Driver().Delete(*ctx, storagePath)
+	return Driver().Delete(*BC2DC(ctx), storagePath)
 }

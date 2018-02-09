@@ -5,8 +5,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/astaxie/beego/context"
+	beegoContext "github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
+	dockerContext "github.com/docker/distribution/context"
 )
 
 const octPrefix = "oct"
@@ -17,7 +18,7 @@ var (
 )
 
 func initData() {
-	var ctx context.Context
+	var ctx dockerContext.Context
 	ok, _ = Driver().GetContent(ctx, fmt.Sprintf("%s-icons/ok", octPrefix))
 	fail, _ = Driver().GetContent(ctx, fmt.Sprintf("%s-icons/fail", octPrefix))
 }
@@ -38,31 +39,31 @@ func checkData(data []byte) []byte {
 }
 
 // GetOctStatus returns the status of a repo
-func GetOctStatus(ctx *context.Context, repo string) ([]byte, error) {
+func GetOctStatus(ctx *beegoContext.Context, repo string) ([]byte, error) {
 	storagePath := fmt.Sprintf("%s/%s/status", octPrefix, repo)
 	logs.Debug("Get '%s'.", storagePath)
 
-	return Driver().GetContent(*ctx, storagePath)
+	return Driver().GetContent(*BC2DC(ctx), storagePath)
 }
 
 // GetOctImage returns the image of a repo
-func GetOctImage(ctx *context.Context, repo string) ([]byte, error) {
+func GetOctImage(ctx *beegoContext.Context, repo string) ([]byte, error) {
 	storagePath := fmt.Sprintf("%s/%s/image", octPrefix, repo)
 	logs.Debug("Get '%s'.", storagePath)
 
-	return Driver().GetContent(*ctx, storagePath)
+	return Driver().GetContent(*BC2DC(ctx), storagePath)
 }
 
 // AddOctOutput writes the output to storage
-func AddOctOutput(ctx *context.Context, repo string, data []byte) error {
+func AddOctOutput(ctx *beegoContext.Context, repo string, data []byte) error {
 	storageDir := fmt.Sprintf("%s/%s", octPrefix, repo)
 	logs.Debug("AddOctOutput '%s'.", storageDir)
 
 	imageData := checkData(data)
-	err := Driver().PutContent(*ctx, filepath.Join(storageDir, "image"), imageData)
+	err := Driver().PutContent(*BC2DC(ctx), filepath.Join(storageDir, "image"), imageData)
 	if err != nil {
 		return err
 	}
 	//FIXME: rollback to remove 'image'
-	return Driver().PutContent(*ctx, filepath.Join(storageDir, "status"), data)
+	return Driver().PutContent(*BC2DC(ctx), filepath.Join(storageDir, "status"), data)
 }

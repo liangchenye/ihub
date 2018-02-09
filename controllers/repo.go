@@ -8,10 +8,11 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"github.com/docker/distribution/registry/storage/driver"
+
 	"github.com/isula/ihub/config"
 	"github.com/isula/ihub/models"
 	"github.com/isula/ihub/storage"
-	"github.com/isula/ihub/storage/driver"
 )
 
 // Repo defines the repo operations

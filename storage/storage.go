@@ -3,11 +3,14 @@ package storage
 import (
 	"errors"
 
+	beegoContext "github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
+	dockerContext "github.com/docker/distribution/context"
+	"github.com/docker/distribution/registry/storage/driver"
+	"github.com/docker/distribution/registry/storage/driver/factory"
 
 	"github.com/isula/ihub/config"
 	"github.com/isula/ihub/health"
-	"github.com/isula/ihub/storage/driver"
 )
 
 // Health provides interface for storage health operations
@@ -36,14 +39,10 @@ func init() {
 // TODO: more logs
 func loadDriver(cfg config.StorageConfig) (driver.StorageDriver, error) {
 	for n, paras := range cfg {
-		logs.Debug("Find storage driver for: %s", n)
-		d, err := driver.FindDriver(n, paras)
+		logs.Debug("Find storage driver for: %s, %v", n, paras)
+		d, err := factory.Create(n, paras)
 		if err == nil {
-			// Pickup the first qualified driver
-			err = d.Init(paras)
-			if err == nil {
-				return d, nil
-			}
+			return d, nil
 		}
 	}
 
@@ -74,4 +73,11 @@ func Driver() driver.StorageDriver {
 	}
 
 	return sysDriver
+}
+
+// BC2DC converts beego context to docker context
+func BC2DC(bctx *beegoContext.Context) *dockerContext.Context {
+	//TODO
+	var ctx dockerContext.Context
+	return &ctx
 }
