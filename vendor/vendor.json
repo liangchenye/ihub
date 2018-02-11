@@ -114,6 +114,11 @@
 			"revision": ""
 		},
 		{
+			"checksumSHA1": "iIUYZyoanCQQTUaWsu8b+iOSPt4=",
+			"path": "github.com/gorilla/context",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "xF+WqeL9eAlbUkiO2bLghMQzO4k=",
 			"path": "github.com/gorilla/mux",
 			"revision": ""
