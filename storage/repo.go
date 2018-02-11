@@ -9,12 +9,14 @@ import (
 	"github.com/docker/distribution/registry/storage/driver"
 )
 
+// docker driver requires to begin with '/'
+
 // HeadRepoURL return the repo url stat
 // TODO we need to get user in ctx, or setting in config
 func HeadRepoURL(ctx *context.Context, url string) (driver.FileInfo, error) {
 	logs.Debug("Head '%s'.", url)
 
-	return Driver().Stat(*BC2DC(ctx), url)
+	return Driver().Stat(*BC2DC(ctx), "/"+url)
 }
 
 // GetRepoPackage gets the blob data
@@ -22,7 +24,7 @@ func HeadRepoURL(ctx *context.Context, url string) (driver.FileInfo, error) {
 func GetRepoPackage(ctx *context.Context, url string) ([]byte, error) {
 	logs.Debug("GetRepoPackage '%s'.", url)
 
-	return Driver().GetContent(*BC2DC(ctx), url)
+	return Driver().GetContent(*BC2DC(ctx), "/"+url)
 }
 
 // PutPackage put the blob data to a repo by a name
@@ -30,7 +32,7 @@ func PutPackage(ctx *context.Context, reponame string, pkgname string, data []by
 	url := fmt.Sprintf("%s/%s", reponame, pkgname)
 	logs.Debug("PutPackage '%s'.", url)
 
-	return Driver().PutContent(*BC2DC(ctx), url, data)
+	return Driver().PutContent(*BC2DC(ctx), "/"+url, data)
 }
 
 // PutPackageFromReader writes the package data to a repo from a reader stream
@@ -38,7 +40,7 @@ func PutPackageFromReader(ctx *context.Context, reponame string, pkgname string,
 	url := fmt.Sprintf("%s/%s", reponame, pkgname)
 	logs.Debug("PutPackageFromReader '%s'.", url)
 
-	w, err := Driver().Writer(*BC2DC(ctx), url, false)
+	w, err := Driver().Writer(*BC2DC(ctx), "/"+url, false)
 	if err != nil {
 		return 0, err
 	}
@@ -51,7 +53,7 @@ func PutPackageFromReader(ctx *context.Context, reponame string, pkgname string,
 func ListRepoDir(ctx *context.Context, url string) ([]string, error) {
 	logs.Debug("List '%s'.", url)
 
-	raw, err := Driver().List(*BC2DC(ctx), url)
+	raw, err := Driver().List(*BC2DC(ctx), "/"+url)
 	if err != nil {
 		return nil, err
 	}

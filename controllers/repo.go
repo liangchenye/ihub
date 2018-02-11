@@ -43,7 +43,7 @@ func (r *Repo) GetPackageOrDir() {
 		// return the template view
 		addr := config.GetDisplayAddr()
 		for _, f := range files {
-			fileMap[filepath.Base(f)] = fmt.Sprintf("%s/repo/%s", addr, f)
+			fileMap[filepath.Base(f)] = fmt.Sprintf("%s/repo%s", addr, f)
 		}
 		r.Data["files"] = fileMap
 		return
