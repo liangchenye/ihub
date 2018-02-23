@@ -1,17 +1,10 @@
-// digest.go is from docker/docker project
 package utils
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
-
-func TestAlgAvailable(t *testing.T) {
-	assert.Equal(t, true, SHA256.Available())
-	assert.Equal(t, false, TarsumV1SHA256.Available())
-}
 
 func TestDigestManifest(t *testing.T) {
 	data := `
@@ -32,8 +25,8 @@ func TestDigestManifest(t *testing.T) {
 	  ]
 }
 `
-	p, err := DigestManifest([]byte(data))
-	fmt.Println(p, err)
+	_, err := DigestManifest([]byte(data))
+	assert.Nil(t, err)
 
 	_, err = DigestManifest([]byte("invalid"))
 	assert.NotNil(t, err)
